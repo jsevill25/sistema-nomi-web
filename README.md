@@ -69,4 +69,4 @@ python manage.py check
 python manage.py test payroll
 ```
 
-Las pruebas cubren conversiones, docentes por hora, transporte salarial, escalafón, retenciones semanales/mensuales, tope de días adicionales, comparador de prestaciones y aislamiento entre instituciones.
+Las pruebas cubren conversiones, docentes por hora, transporte salarial, escalafón, retenciones semanales/mensuales, tope de días adicionales, comparador de prestaciones y aislamiento entre instituciones.# myweb
