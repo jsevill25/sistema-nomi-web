@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">{{ eyebrow }}</div><h1>{{ title }}</h1><p>Los cambios quedan registrados y se aplican a los cálculos que correspondan.</p></div><a class="btn btn-quiet" href="javascript:history.back()"><i class="bi bi-arrow-left me-2"></i>Volver</a></div>
+<div class="form-layout"><div class="form-panel"><form method="post" novalidate>{% csrf_token %}{% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}<div class="form-grid">{% for field in form %}<div class="form-field {% if field.field.widget.input_type == 'checkbox' %}field-checkbox{% endif %}{% if field.name == 'monthly_salary_usd' %} contract-monthly{% elif field.name == 'hours_per_month' or field.name == 'hourly_rate_usd' %} contract-hourly{% elif field.name == 'scale_bonus_usd' %} contract-fulltime{% endif %}">{% if field.field.widget.input_type == 'checkbox' %}<label class="check-control">{{ field }}<span>{{ field.label }}</span></label>{% else %}<label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %}<span class="required-mark">*</span>{% endif %}</label>{{ field }}{% endif %}{% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}{% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}</div>{% endfor %}</div><div class="form-actions"><span class="required-note"><span class="required-mark">*</span> Campo obligatorio</span><button class="btn btn-primary" type="submit"><i class="bi bi-check2 me-2"></i>Guardar cambios</button></div></form></div><aside class="form-aside"><span class="aside-symbol"><i class="bi bi-info-lg"></i></span><h3>Parámetros con vigencia</h3><p>La configuración aplicable se selecciona por su fecha de vigencia al cierre del período. Las corridas guardan una referencia a la versión utilizada.</p></aside></div>
+{% endblock %}
+{% block scripts %}{% if form.contract_type %}<script>
+document.addEventListener("DOMContentLoaded", () => {
+	const contract = document.getElementById("id_contract_type");
+	const groups = {
+		monthly: document.querySelectorAll(".contract-monthly"),
+		hourly: document.querySelectorAll(".contract-hourly"),
+		fulltime: document.querySelectorAll(".contract-fulltime"),
+	};
+	const updateFields = () => {
+		groups.monthly.forEach((field) => field.classList.toggle("d-none", contract.value === "hourly_teacher"));
+		groups.hourly.forEach((field) => field.classList.toggle("d-none", contract.value !== "hourly_teacher"));
+		groups.fulltime.forEach((field) => field.classList.toggle("d-none", contract.value !== "full_time_teacher"));
+	};
+	contract.addEventListener("change", updateFields);
+	updateFields();
+});
+</script>{% endif %}{% endblock %}
